@@ -24,9 +24,9 @@ public:
   void setQuantity(int newQuantity);
   friend std::ostream & operator << (std::ostream &out, Stock& s);
   friend std::istream & operator >> (std::istream &in, Stock& s);
+  void updateStock();
 };
 
-void insertStock(std::string& name, int& price, int& quantity);
 std::ostream & operator << (std::ostream &out, std::vector<Stock>& stockList);
 std::ostream & operator << (std::ostream &out, std::map<int,Stock>& stockMap);
 

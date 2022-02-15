@@ -6,6 +6,7 @@
 
 
 class Product{
+protected:
   std::string m_name;
   int m_price;
 
