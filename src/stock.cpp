@@ -28,21 +28,23 @@ void Stock::setId(int id){
     m_id = id;
 }
 
-void insertStock(std::string& name, int& price, int& quantity){
+void Stock::updateStock(){
   std::string temp;
-  while (name.empty()){
-      std::cout << "Name: ";
-      std::getline(std::cin, name);
+  std::cout << "New Name: ";
+  std::getline(std::cin, temp);
+  if(!temp.empty()){
+    this->setName(temp);
   }
-
-  inputNumber(price, "Enter price: ");
-  inputNumber(quantity, "Enter quantity: ");
-  
+  inputNumber(this->m_price, "New Price: ");
+  inputNumber(this->m_quantity, "New Quantity: ");
 }
+
+
+
 
 std::istream & operator >> (std::istream &in, Stock& s){
       std::string temp;
-      int intTemp;
+      int intTemp = 0;
       while (temp.empty()){
           std::cout << "Name: ";
           std::getline(std::cin, temp);
@@ -50,6 +52,7 @@ std::istream & operator >> (std::istream &in, Stock& s){
       s.setName(temp);
     inputNumber(intTemp, "Price: ");
     s.setPrice(intTemp);
+    intTemp = 0;
     inputNumber(intTemp, "Quantity: ");
     s.setQuantity(intTemp);
 
@@ -83,7 +86,7 @@ std::ostream & operator << (std::ostream &out, std::map<int,Stock>& stockMap){
    const std::string line = sep + std::string( total_width-1, '-' ) + '|' ;
 
    std::cout << line << '\n' << sep
-            << std::setw(int_width) << "No" << sep
+            << std::setw(int_width) << "Id" << sep
             << std::setw(name_width) << "Product Name" << sep
             << std::setw(int_width) << "Price" << sep 
             << std::setw(int_width) << "Quantity" << sep 

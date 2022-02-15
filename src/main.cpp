@@ -6,41 +6,73 @@
 #include <map>
 #include <string>
 
-#define HELP "Command: \n \t add : Add Stock\n \t show: Display Stocks\n \t update: Update Stock\n \t delete: Delete Stock\n"
+#define HELP "Command: \n \t add : Add Stock\n \t show: Display Stocks\n \t update {id}: Update Stock by id\n \t delete {id}: Delete Stock by id\n"
+std::string Command::add = "add";
+std::string Command::show = "show";
+std::string Command::update = "update";
+std::string Command::del = "delete";
+std::string Command::help = "help";
+
+static std::map<int, Stock> stockMap;
 
 int main(){
-  std::map<int, Stock> stockMap;
+  
 
   while(true){
     std::string command;
     std::cout << ">> ";
     std::getline(std::cin, command);
-    if (command == "help") std::cout << HELP;
-    else if (command == "add"){
+    if (command == Command::help) std::cout << HELP;
+    else if (command == Command::add){
       Stock s;
       std::cin >> s;
       s.setId(stockMap.size() + 1);
       stockMap.insert({stockMap.size() + 1, s});
     }
-    else if (command == "show"){
+    else if (command == Command::show){
       std::cout << stockMap;
     }
 
-    else if (command == "update"){
+    else if (command.find(Command::update) != std::string::npos){
       int id;
-      inputNumber(id,"Enter id : ");
+      try{
+          id = std::stoi(command.substr(Command::update.length() + 1, command.length()));
+      }
+      
+      catch(const std::out_of_range & e){
+            std::cout << "no id was selected\n";
+            continue;
+      }
+      catch(const std::invalid_argument & e){
+            std::cout << "invalid argument\n";
+            continue;
+      }
+
       auto it  = stockMap.find(id);
       if (it != stockMap.end()){
         std::cout << it->second;
         std::cout << "updating " << it->second.getName() << std::endl;
-        std::cin >> it->second;
+        it->second.updateStock();
       }
       else std::cout << "id not found\n";
     }
 
-    else if (command == "delete"){
+    else if (command.find(Command::del) != std::string::npos){
       int id;
-      inputNumber(id,"Enter id : ");
+      try{
+          id = std::stoi(command.substr(Command::del.length() + 1, command.length()));
+      }
+      
+      catch(const std::out_of_range & e){
+            std::cout << "no id was selected del\n";
+            continue;
+      }
+      catch(const std::invalid_argument & e){
+            std::cout << "invalid argument\n";
+            continue;
+      }
+
+
       auto it  = stockMap.find(id);
       if (it != stockMap.end()){
         stockMap.erase(it);

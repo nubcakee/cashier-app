@@ -11,6 +11,9 @@ void inputNumber(int& target, const std::string inMessage, std::string errMessag
         std::string temp;
         std::cout << inMessage;
         std::getline(std::cin, temp);
+        if (temp.empty()){
+            break;
+        }
         if (!isNumber(temp)){
             std::cout << errMessage;
         }
@@ -23,7 +26,6 @@ void inputNumber(int& target, const std::string inMessage, std::string errMessag
             std::cout << "Number is too large!\n";
             continue;
         }
-        
         break;
       }
   }
