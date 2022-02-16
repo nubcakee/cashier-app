@@ -1,6 +1,6 @@
 #include "../headers/stock.hpp"
 
-
+#include <cstdio>
 Stock::Stock()
 : Stock("",0,0,0){
 
@@ -130,3 +130,4 @@ std::ostream & operator << (std::ostream &out, std::vector<Stock> &stockList){
    std::cout << line << '\n' ;
    return out;
 }
+

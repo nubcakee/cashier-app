@@ -8,7 +8,7 @@
 #include <iomanip>
 #include <vector>
 #include <map>
-
+#include <fstream>
 
 
 class Stock: public Product{
@@ -29,5 +29,8 @@ public:
 
 std::ostream & operator << (std::ostream &out, std::vector<Stock>& stockList);
 std::ostream & operator << (std::ostream &out, std::map<int,Stock>& stockMap);
+
+void writeStock(const std::string fileName, Stock& s);
+
 
 #endif

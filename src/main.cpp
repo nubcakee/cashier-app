@@ -1,6 +1,7 @@
 #include "../headers/product.hpp"
 #include "../headers/stock.hpp"
 #include "../headers/io.hpp"
+#include "../headers/database.hpp"
 
 #include <vector>
 #include <map>
@@ -14,11 +15,13 @@ std::string Command::del = "delete";
 std::string Command::help = "help";
 
 static std::map<int, Stock> stockMap;
+SqltDB db;
 
-int main(){
-  
-
+int main(){  
+  db.open("db.sqlite3");
+  db.execute("CREATE TABLE IF NOT EXISTS stock (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, price INTEGER NOT NULL, quantity INTEGER NOT NULL)");
   while(true){
+    Stock s;
     std::string command;
     std::cout << ">> ";
     std::getline(std::cin, command);
@@ -27,7 +30,10 @@ int main(){
       Stock s;
       std::cin >> s;
       s.setId(stockMap.size() + 1);
-      stockMap.insert({stockMap.size() + 1, s});
+      std::string sql_c =  sql("insert into stock(name, price, quantity) values(?,?,?)", {s.getName(), std::to_string(s.getPrice()), std::to_string(s.getQuantity())});
+      // std::cout << sql_c;
+      db.execute(sql_c);
+      // stockMap.insert({stockMap.size() + 1, s});
     }
     else if (command == Command::show){
       std::cout << stockMap;
@@ -82,6 +88,7 @@ int main(){
     }
 
     else std::cout << HELP;
+
   }
 
 }
