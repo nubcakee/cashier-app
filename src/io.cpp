@@ -15,7 +15,7 @@ void inputNumber(int& target, const std::string inMessage, std::string errMessag
             break;
         }
         if (!isNumber(temp)){
-            std::cout << errMessage;
+            std::cerr << errMessage;
         }
         else{
             try{
@@ -23,7 +23,7 @@ void inputNumber(int& target, const std::string inMessage, std::string errMessag
             }
 
             catch (const std::out_of_range & e) {
-            std::cout << "Number is too large!\n";
+            std::cerr << "Number is too large!\n";
             continue;
         }
         break;
@@ -47,11 +47,6 @@ std::string truncateByEllipsis(std::string target, int maxSize){
     return target;
 };
 
-std::string Command::add = "add";
-std::string Command::show = "show";
-std::string Command::update = "update";
-std::string Command::del = "delete";
-std::string Command::help = "help";
 
 Command::Command(){
 
@@ -59,7 +54,6 @@ Command::Command(){
 
 bool Command::operator == (const std::string &r){
         return this->inputBuffer == r;
-
 }
 
 std::string Command::getIdArgument(){

@@ -7,15 +7,21 @@
 
 #define HELP "Command: \n \t add : Add Stock\n \t show: Display Stocks\n \t update {id}: Update Stock by id\n \t delete {id}: Delete Stock by id\n"
 
+#define COMMAND_ADD "add"
+#define COMMAND_SHOW "show"
+#define COMMAND_UPDATE "update"
+#define COMMAND_DELETE "delete"
+#define COMMAND_HELP "help"
+
+
 class Command{
 public:
     Command();
-    static std::string add;
-    static std::string show;
-    static std::string update;
-    static std::string del;
-    static std::string help;
-    std::string commandType;
+    // static std::string add;
+    // static std::string show;
+    // static std::string update;
+    // static std::string del;
+    // static std::string help;
     std::string inputBuffer;
     bool operator == (const std::string &r);
     std::string getIdArgument();

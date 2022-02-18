@@ -10,6 +10,7 @@ public:
     int price;
     int quantity;
     friend std::istream & operator >> (std::istream &in, Stock& s);
+    void updateStock();
 };
 
 #endif

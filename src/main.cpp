@@ -13,6 +13,7 @@ const int num_flds = 4 ;
 const std::string sep = " |" ;
 const int total_width = name_width + int_width *3 + sep.size() * num_flds ;
 const std::string line = sep + std::string( total_width-1, '-' ) + '|' ;
+
 void SqltDB::callbackCout(std::vector<std::string>& dataFetch){
         auto id = dataFetch[0];
         auto name = dataFetch[1];
@@ -37,17 +38,17 @@ int main(){
     std::cout << ">> ";
     std::getline(std::cin, command.inputBuffer);
 
-    if (command == Command::help) std::cout << HELP;
+    if (command == COMMAND_HELP) std::cout << HELP;
     
-    else if (command == Command::add){
+    else if (command == COMMAND_ADD){
       Stock s;
       std::cin >> s;
       std::string sql_c =  sql("insert into stock(name, price, quantity) values(?,?,?)", {s.name, std::to_string(s.price), std::to_string(s.quantity)});
       db.execute(sql_c);
     }
     
-    else if (command == Command::show){
-      std::cout << line << '\n' << sep
+    else if (command == COMMAND_SHOW){
+      std::cout << "\n\n" << line << '\n' << sep
                 << std::setw(int_width) << "No" << sep
                 << std::setw(name_width) << "Product Name" << sep
                 << std::setw(int_width) << "Price" << sep 
@@ -57,7 +58,7 @@ int main(){
       std::cout << line << '\n';
     }
 
-    else if (command.inputBuffer.find(Command::update) != std::string::npos){
+    else if (command.inputBuffer.find(COMMAND_UPDATE) != std::string::npos){
       int id;
       try{
           id = std::stoi(command.getIdArgument());
@@ -81,9 +82,21 @@ int main(){
       std::string sql_q = sql("SELECT * FROM stock where id = ?", {std::to_string(id)});
       db.query(sql_q);
       std::cout << std::setw(total_width) << ".....\n";
+      
+      std::string name = db.fetchOne[1];
+      int price = std::stoi(db.fetchOne[2]);
+      int quantity = std::stoi(db.fetchOne[3]);
+      
+      inputString(name, "New Name: ");
+      inputNumber(price, "New Number: ");
+      inputNumber(quantity, "New Quantity: ");
+      
+      sql_q = sql("UPDATE stock SET name = ? , price = ? , quantity = ? WHERE id = ?", {name, std::to_string(price), std::to_string(quantity), std::to_string(id)});
+      
+      db.execute(sql_q);
      }
 
-    else if (command.inputBuffer.find(Command::del) != std::string::npos){
+    else if (command.inputBuffer.find(COMMAND_DELETE) != std::string::npos){
       int id;
       try{
           id = std::stoi(command.getIdArgument());

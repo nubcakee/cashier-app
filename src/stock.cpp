@@ -9,3 +9,8 @@ std::istream & operator >> (std::istream &in, Stock& s){
     return in;
 }
 
+void Stock::updateStock(){
+    inputString(this->name, "New Name: ");
+    inputNumber(this->price, "Price: ");
+    inputNumber(this->quantity, "Quantity: ");
+}
