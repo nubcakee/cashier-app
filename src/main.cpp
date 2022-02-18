@@ -1,48 +1,66 @@
-#include "../headers/product.hpp"
 #include "../headers/stock.hpp"
 #include "../headers/io.hpp"
 #include "../headers/database.hpp"
 
 #include <vector>
-#include <map>
 #include <string>
 
-#define HELP "Command: \n \t add : Add Stock\n \t show: Display Stocks\n \t update {id}: Update Stock by id\n \t delete {id}: Delete Stock by id\n"
-std::string Command::add = "add";
-std::string Command::show = "show";
-std::string Command::update = "update";
-std::string Command::del = "delete";
-std::string Command::help = "help";
 
-static std::map<int, Stock> stockMap;
-SqltDB db;
 
-int main(){  
+const int name_width = 20 ;
+const int int_width = 10 ;
+const int num_flds = 4 ;
+const std::string sep = " |" ;
+const int total_width = name_width + int_width *3 + sep.size() * num_flds ;
+const std::string line = sep + std::string( total_width-1, '-' ) + '|' ;
+void SqltDB::callbackCout(std::vector<std::string>& dataFetch){
+        auto id = dataFetch[0];
+        auto name = dataFetch[1];
+        auto price = dataFetch[2];
+        auto quantity = dataFetch[3];  
+        std::cout << sep
+                << std::setw(int_width) << id<< sep  
+                << std::setw(name_width) << truncateByEllipsis(name, name_width) << sep 
+                << std::setw(int_width) << price << sep
+                << std::setw(int_width) << quantity << sep << "\n";
+ }
+
+static SqltDB db;
+static Command command;
+
+int main(){
+
   db.open("db.sqlite3");
   db.execute("CREATE TABLE IF NOT EXISTS stock (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, price INTEGER NOT NULL, quantity INTEGER NOT NULL)");
   while(true){
-    Stock s;
-    std::string command;
+
     std::cout << ">> ";
-    std::getline(std::cin, command);
+    std::getline(std::cin, command.inputBuffer);
+
     if (command == Command::help) std::cout << HELP;
+    
     else if (command == Command::add){
       Stock s;
       std::cin >> s;
-      s.setId(stockMap.size() + 1);
-      std::string sql_c =  sql("insert into stock(name, price, quantity) values(?,?,?)", {s.getName(), std::to_string(s.getPrice()), std::to_string(s.getQuantity())});
-      // std::cout << sql_c;
+      std::string sql_c =  sql("insert into stock(name, price, quantity) values(?,?,?)", {s.name, std::to_string(s.price), std::to_string(s.quantity)});
       db.execute(sql_c);
-      // stockMap.insert({stockMap.size() + 1, s});
     }
+    
     else if (command == Command::show){
-      std::cout << stockMap;
+      std::cout << line << '\n' << sep
+                << std::setw(int_width) << "No" << sep
+                << std::setw(name_width) << "Product Name" << sep
+                << std::setw(int_width) << "Price" << sep 
+                << std::setw(int_width) << "Quantity" << sep 
+                << '\n' << line << "\n" ;
+      db.query("SELECT * FROM stock");    
+      std::cout << line << '\n';
     }
 
-    else if (command.find(Command::update) != std::string::npos){
+    else if (command.inputBuffer.find(Command::update) != std::string::npos){
       int id;
       try{
-          id = std::stoi(command.substr(Command::update.length() + 1, command.length()));
+          id = std::stoi(command.getIdArgument());
       }
       
       catch(const std::out_of_range & e){
@@ -53,20 +71,22 @@ int main(){
             std::cout << "invalid argument\n";
             continue;
       }
+      std::cout << "\n\n*Selected\n";
+      std::cout << line << '\n' << sep
+                << std::setw(int_width) << "No" << sep
+                << std::setw(name_width) << "Product Name" << sep
+                << std::setw(int_width) << "Price" << sep 
+                << std::setw(int_width) << "Quantity" << sep 
+                << '\n' << line << "\n" ;
+      std::string sql_q = sql("SELECT * FROM stock where id = ?", {std::to_string(id)});
+      db.query(sql_q);
+      std::cout << std::setw(total_width) << ".....\n";
+     }
 
-      auto it  = stockMap.find(id);
-      if (it != stockMap.end()){
-        std::cout << it->second;
-        std::cout << "updating " << it->second.getName() << std::endl;
-        it->second.updateStock();
-      }
-      else std::cout << "id not found\n";
-    }
-
-    else if (command.find(Command::del) != std::string::npos){
+    else if (command.inputBuffer.find(Command::del) != std::string::npos){
       int id;
       try{
-          id = std::stoi(command.substr(Command::del.length() + 1, command.length()));
+          id = std::stoi(command.getIdArgument());
       }
       
       catch(const std::out_of_range & e){
@@ -78,13 +98,8 @@ int main(){
             continue;
       }
 
-
-      auto it  = stockMap.find(id);
-      if (it != stockMap.end()){
-        stockMap.erase(it);
-        std::cout << id << " is deleted\n";
-      }
-      else std::cout << "id not found\n";
+      std::string sql_q =  sql("DELETE FROM stock where id = ?", {std::to_string(id)});
+      db.execute(sql_q);
     }
 
     else std::cout << HELP;

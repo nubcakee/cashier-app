@@ -31,4 +31,45 @@ void inputNumber(int& target, const std::string inMessage, std::string errMessag
   }
 }
 
+void inputString(std::string& target, const std::string inMessage){
+    std::string temp;
+    std::cout << inMessage;
+    std::getline(std::cin, temp);
+    if(!temp.empty()){
+        target = temp;
+    }
+}
 
+std::string truncateByEllipsis(std::string target, int maxSize){
+    if (target.length() > maxSize){
+        return target.substr(0,maxSize-3) + "...";
+    }
+    return target;
+};
+
+std::string Command::add = "add";
+std::string Command::show = "show";
+std::string Command::update = "update";
+std::string Command::del = "delete";
+std::string Command::help = "help";
+
+Command::Command(){
+
+}
+
+bool Command::operator == (const std::string &r){
+        return this->inputBuffer == r;
+
+}
+
+std::string Command::getIdArgument(){
+        std::string idString; 
+        std::string::const_iterator it = this->inputBuffer.begin();
+         while (it != this->inputBuffer.end()) {
+             if (std::isdigit(*it)){
+                    idString += *it;
+             }
+             ++it;
+         }
+        return idString;
+    }

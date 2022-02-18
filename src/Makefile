@@ -1,6 +1,6 @@
 VPATH = ../headers
 
-OBJECTS = product.o stock.o io.o database.o
+OBJECTS = stock.o io.o database.o
 
 LIBS = -lsqlite3
 

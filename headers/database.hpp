@@ -8,20 +8,20 @@
 #include <cstdarg>
 
 
-typedef std::vector<std::vector<std::string>> vectorString;
 
 class SqltDB{
     sqlite3* DB;
     int exit;
 
 public:
-  static vectorString result;
+  static void callbackCout(std::vector<std::string>& dataFetch);
+  static std::vector<std::string> fetchOne;
   SqltDB();
   ~SqltDB();
   void open(const char* fileName);
   int execute(std::string sql);
   static int callback(void* data, int argc, char** argv, char** azColName);
-  void query(std::string query);
+  int query(std::string query);
 };
 
 std::string sql(const std::string sql, std::vector<std::string> args);
