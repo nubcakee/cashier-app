@@ -1,6 +1,9 @@
 #include "../headers/stock.hpp"
 
-
+Stock::Stock(){
+    price = 0;
+    quantity = 0;
+}
 
 std::istream & operator >> (std::istream &in, Stock& s){
     inputString(s.name, "Name: ");

@@ -74,7 +74,7 @@ int main(){
       }
       std::cout << "\n\n*Selected\n";
       std::cout << line << '\n' << sep
-                << std::setw(int_width) << "No" << sep
+                << std::setw(int_width) << "Id" << sep
                 << std::setw(name_width) << "Product Name" << sep
                 << std::setw(int_width) << "Price" << sep 
                 << std::setw(int_width) << "Quantity" << sep 

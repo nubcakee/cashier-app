@@ -5,7 +5,7 @@
 
 class Stock{
 public:
-    Stock(){};
+    Stock();
     std::string name;
     int price;
     int quantity;
