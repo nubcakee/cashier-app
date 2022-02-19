@@ -7,7 +7,8 @@
 #include <string>
 #include <cstdarg>
 
-
+using Record = std::vector<std::string>;
+using Records = std::vector<Record>;
 
 class SqltDB{
     sqlite3* DB;
@@ -15,13 +16,12 @@ class SqltDB{
 
 public:
   static void callbackCout(std::vector<std::string>& dataFetch);
-  static std::vector<std::string> fetchOne;
   SqltDB();
   ~SqltDB();
   void open(const char* fileName);
   int execute(std::string sql);
   static int callback(void* data, int argc, char** argv, char** azColName);
-  int query(std::string query);
+  Records query(std::string query);
 };
 
 std::string sql(const std::string sql, std::vector<std::string> args);

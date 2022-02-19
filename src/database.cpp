@@ -35,34 +35,33 @@ int SqltDB::execute(std::string sql){
 
 int SqltDB::callback(void* data, int argc, char** argv, char** azColName)
     {
-        fetchOne.clear();
+        Records* record  = static_cast<Records*>(data);
+        
         int i;
         std::vector<std::string> d;
         for (i = 0; i < argc; i++) {
-            // printf("%d\n", i);
             d.push_back( argv[i] ? argv[i] : "NULL");
-            // printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
         }
-        fetchOne = d;
+        record->push_back(d);
         callbackCout(d);
         return 0;
     }
 
 
-int SqltDB::query(std::string query){
-    //   result.clear();
-      std::string data;
-      exit = sqlite3_exec(DB, query.c_str(), SqltDB::callback, (void*)data.c_str(), NULL);
-    //   if (exit != SQLITE_OK)
-    //       std::cerr << "[ERROR] " << query << std::endl;
-    //   else {
-    //       std::cout << "[SUCCESS] " << query << std::endl;
-    //   }
+Records SqltDB::query(std::string query){
+
+      Records records;
+      char* errorMessage;
+      exit = sqlite3_exec(DB, query.c_str(), SqltDB::callback, &records, &errorMessage);
+   
+     
+      if (exit != SQLITE_OK)
+          std::cerr << "[ERROR] " << std::string(errorMessage) << std::endl;
+  
        
-    return exit;
+    return records;
 }
-// void SqltDB::callbackCout(std::vector<std::string>& dataFetch){};
-std::vector<std::string> SqltDB::fetchOne = {};
+
 std::string sql(const std::string sql, std::vector<std::string> args){
         int pos;
         int counter = 0;

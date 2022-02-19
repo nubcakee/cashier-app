@@ -80,12 +80,15 @@ int main(){
                 << std::setw(int_width) << "Quantity" << sep 
                 << '\n' << line << "\n" ;
       std::string sql_q = sql("SELECT * FROM stock where id = ?", {std::to_string(id)});
-      db.query(sql_q);
+    
+      auto records = db.query(sql_q);
       std::cout << std::setw(total_width) << ".....\n";
       
-      std::string name = db.fetchOne[1];
-      int price = std::stoi(db.fetchOne[2]);
-      int quantity = std::stoi(db.fetchOne[3]);
+      if (records.empty()) continue;
+
+      std::string name = records[0][1];
+      int price = std::stoi(records[0][2]);
+      int quantity = std::stoi(records[0][3]);
       
       inputString(name, "New Name: ");
       inputNumber(price, "New Number: ");
