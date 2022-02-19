@@ -118,6 +118,7 @@ int main(){
       db.execute(sql_q);
     }
 
+    else if (command == COMMAND_EXIT) exit(0);
     else std::cout << HELP;
 
   }
