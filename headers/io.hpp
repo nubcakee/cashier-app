@@ -28,7 +28,7 @@ public:
 };
 
 bool isNumber(std::string& s);
-void inputNumber(int& target, const std::string inMessage,  std::string errMessage ="the input is invalid (must be a number)!\n");
+void inputNumber(unsigned int& target, const std::string inMessage,  std::string errMessage ="the input is invalid (must be a number)!\n");
 void inputString(std::string& target, const std::string inMessage);
 std::string truncateByEllipsis(std::string target, int maxSize);
 

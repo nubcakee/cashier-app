@@ -6,7 +6,7 @@ bool isNumber(std::string& s){
   return !s.empty() && it == s.end();
 }
 
-void inputNumber(int& target, const std::string inMessage, std::string errMessage){
+void inputNumber(unsigned int& target, const std::string inMessage, std::string errMessage){
     while(true){
         std::string temp;
         std::cout << inMessage;
@@ -67,3 +67,4 @@ std::string Command::getIdArgument(){
          }
         return idString;
     }
+

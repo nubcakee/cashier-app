@@ -20,8 +20,11 @@ public:
   ~SqltDB();
   void open(const char* fileName);
   int execute(std::string sql);
-  static int callback(void* data, int argc, char** argv, char** azColName);
-  Records query(std::string query);
+  Records records;
+  static int callbackShow(void* data, int argc, char** argv, char** azColName);
+  static int callbackFetchAll(void* data, int argc, char** argv, char** azColName);
+  static int callbackTest(void* data, int argc, char** argv, char** azColname);
+  void query(std::string, int(*func)(void*, int, char**, char**));
 };
 
 std::string sql(const std::string sql, std::vector<std::string> args);
