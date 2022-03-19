@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 
 #define HELP "Command: \n \t add : Add Stock\n \t show: Display Stocks\n \t update {id}: Update Stock by id\n \t delete {id}: Delete Stock by id\n \t exit : exit application\n"
 
@@ -31,5 +32,5 @@ bool isNumber(std::string& s);
 void inputNumber(unsigned int& target, const std::string inMessage,  std::string errMessage ="the input is invalid (must be a number)!\n");
 void inputString(std::string& target, const std::string inMessage);
 std::string truncateByEllipsis(std::string target, int maxSize);
-
+std::string priceFormat(std::string target);
 #endif

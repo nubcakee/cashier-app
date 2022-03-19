@@ -9,18 +9,19 @@
 
 const int id_width = 5;
 const int name_width = 20;
-const int int_width = 10;
+const int int_width = 15;
 const int num_flds = 5;
 const std::string sep = " |" ;
 const int total_width = id_width + name_width + int_width *3 + sep.size() * num_flds ;
 const std::string line = sep + std::string( total_width-1, '-' ) + '|' ;
 
+
 void SqltDB::callbackCout(std::vector<std::string>& dataFetch){
         auto id = dataFetch[0];
         auto name = dataFetch[1];
-        auto price = dataFetch[2];
+        auto price = priceFormat(dataFetch[2]);
         auto quantity = dataFetch[3];
-        auto total = dataFetch[4];  
+        auto total = priceFormat(dataFetch[4]);  
         std::cout << sep
                 << std::setw(id_width) << id<< sep  
                 << std::setw(name_width) << truncateByEllipsis(name, name_width) << sep 
@@ -67,7 +68,7 @@ int main(){
       << std::setw(id_width) << "" << "  " 
       << std::setw(name_width) << "" << "  "
       << std::setw(int_width * 2) << "" << "  " << sep 
-      << std::setw(int_width) << total << sep
+      << std::setw(int_width) << priceFormat(total) << sep
       << "\n" <<  line <<"\n";
     }
 

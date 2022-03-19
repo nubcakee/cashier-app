@@ -68,3 +68,17 @@ std::string Command::getIdArgument(){
         return idString;
     }
 
+std::string priceFormat(std::string target){
+    size_t targetSize = target.size() - 1;
+    int c = 0;
+    for(size_t i = targetSize; i > 0;i--){
+            c++;
+            if (c % 3 == 0 && i != 0){
+                target.insert(i, ".");
+                c = 0;
+            }
+    }
+    // std::cout << target;
+    return target;
+}   
+
