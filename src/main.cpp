@@ -98,20 +98,23 @@ int main(){
       // Records records;
       db.query(sql_q, SqltDB::callbackFetchAll);
       auto records = db.records;
+
+      db.query(sql_q, SqltDB::callbackShow);
       std::cout << std::setw(total_width) << ".....\n";
       
       if (records.empty()) continue;
 
-      std::cout << records.size();
 
       std::string name = records[0][1];
       unsigned int price = std::stoi(records[0][2]);
       unsigned int quantity = std::stoi(records[0][3]);
       
+      
       inputString(name, "New Name: ");
-      inputNumber(price, "New Number: ");
-      inputNumber(quantity, "New Quantity: ");      
-      sql_q = sql("UPDATE stock SET name = ? , price = ? , quantity = ? WHERE id = ?", {name, std::to_string(price), std::to_string(quantity), std::to_string(id)});
+      inputNumber(price, "NewPrice: ");
+      inputNumber(quantity, "New Quantity: ");
+      unsigned int total = price * quantity;      
+      sql_q = sql("UPDATE stock SET name = ? , price = ? , quantity = ?, total = ? WHERE id = ?", {name, std::to_string(price), std::to_string(quantity), std::to_string(total), std::to_string(id)});
       db.execute(sql_q);
      }
 
