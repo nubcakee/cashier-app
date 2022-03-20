@@ -10,16 +10,16 @@ void Stock::updateTotal(){
 }
 
 std::istream & operator >> (std::istream &in, Stock& s){
-    inputString(s.name, "Name: ");
-    inputNumber(s.price, "Price: ");
-    inputNumber(s.quantity, "Quantity: ");
+    IO::inputString(s.name, "Name: ");
+    IO::inputNumber(s.price, "Price: ");
+    IO::inputNumber(s.quantity, "Quantity: ");
     s.updateTotal();
     return in;
 }
 
 void Stock::updateStock(){
-    inputString(this->name, "New Name: ");
-    inputNumber(this->price, "Price: ");
-    inputNumber(this->quantity, "Quantity: ");
+    IO::inputString(this->name, "New Name: ");
+    IO::inputNumber(this->price, "Price: ");
+    IO::inputNumber(this->quantity, "Quantity: ");
     this->updateTotal();
 }

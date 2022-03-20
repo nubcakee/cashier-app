@@ -1,13 +1,13 @@
 #include "../headers/database.hpp"
 
-SqltDB::SqltDB(){
+Database::SqltDB::SqltDB(){
 }
 
-SqltDB::~SqltDB(){
+Database::SqltDB::~SqltDB(){
 	sqlite3_close(DB);
 }
 
-void SqltDB::open(const char* fileName){
+void Database::SqltDB::open(const char* fileName){
     exit = sqlite3_open(fileName, &DB);
 
     if (exit) {
@@ -17,7 +17,7 @@ void SqltDB::open(const char* fileName){
     //     std::cout << "Opened Database Successfully!" << std::endl;
 }
 
-int SqltDB::execute(std::string sql){
+int Database::SqltDB::execute(std::string sql){
       char* messageError;
       exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &messageError);
       
@@ -34,7 +34,7 @@ int SqltDB::execute(std::string sql){
 }
 
 
-int SqltDB::callbackShow(void* data, int argc, char** argv, char** azColName)
+int Database::SqltDB::callbackShow(void* data, int argc, char** argv, char** azColName)
     {
         
         int i;
@@ -46,7 +46,7 @@ int SqltDB::callbackShow(void* data, int argc, char** argv, char** azColName)
         return 0;
 }
 
-int SqltDB::callbackFetchAll(void* data, int argc, char** argv, char** azColName)
+int Database::SqltDB::callbackFetchAll(void* data, int argc, char** argv, char** azColName)
     {
         Records* record  = static_cast<Records*>(data);
         
@@ -59,7 +59,7 @@ int SqltDB::callbackFetchAll(void* data, int argc, char** argv, char** azColName
         return 0;
 }
 
-int SqltDB::callbackTest(void* data, int argc, char** argv, char** azColname){
+int Database::SqltDB::callbackTest(void* data, int argc, char** argv, char** azColname){
     Records* record  = static_cast<Records*>(data);
      std::vector<std::string> d;
      for (size_t i = 0; i < argc; i++) {
@@ -70,7 +70,7 @@ int SqltDB::callbackTest(void* data, int argc, char** argv, char** azColname){
     return 0;
   };
 
-void SqltDB::query(std::string query, int(*func)(void*, int, char**, char**)){
+void Database::SqltDB::query(std::string query, int(*func)(void*, int, char**, char**)){
     records.clear();
     char* errorMessage; 
     exit = sqlite3_exec(DB, query.c_str(), func, &records, &errorMessage);
@@ -81,7 +81,7 @@ void SqltDB::query(std::string query, int(*func)(void*, int, char**, char**)){
 
 
 
-std::string sql(const std::string sql, std::vector<std::string> args){
+std::string Database::sql(const std::string sql, std::vector<std::string> args){
         int pos;
         int counter = 0;
         std::string x = sql;

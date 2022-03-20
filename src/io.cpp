@@ -1,12 +1,12 @@
 #include "../headers/io.hpp"
 
-bool isNumber(std::string& s){
+bool IO::isNumber(std::string& s){
   std::string::const_iterator it = s.begin();
   while (it != s.end() && std::isdigit(*it)) ++it;
   return !s.empty() && it == s.end();
 }
 
-void inputNumber(unsigned int& target, const std::string inMessage, std::string errMessage){
+void IO::inputNumber(unsigned int& target, const std::string inMessage, std::string errMessage){
     while(true){
         std::string temp;
         std::cout << inMessage;
@@ -31,7 +31,7 @@ void inputNumber(unsigned int& target, const std::string inMessage, std::string 
   }
 }
 
-void inputString(std::string& target, const std::string inMessage){
+void IO::inputString(std::string& target, const std::string inMessage){
     std::string temp;
     std::cout << inMessage;
     std::getline(std::cin, temp);
@@ -40,7 +40,7 @@ void inputString(std::string& target, const std::string inMessage){
     }
 }
 
-std::string truncateByEllipsis(std::string target, int maxSize){
+std::string IO::truncateByEllipsis(std::string target, int maxSize){
     if (target.length() > maxSize){
         return target.substr(0,maxSize-3) + "...";
     }
@@ -48,15 +48,15 @@ std::string truncateByEllipsis(std::string target, int maxSize){
 };
 
 
-Command::Command(){
+IO::Command::Command(){
 
 }
 
-bool Command::operator == (const std::string &r){
+bool IO::Command::operator == (const std::string &r){
         return this->inputBuffer == r;
 }
 
-std::string Command::getIdArgument(){
+std::string IO::Command::getIdArgument(){
         std::string idString; 
         std::string::const_iterator it = this->inputBuffer.begin();
          while (it != this->inputBuffer.end()) {
@@ -68,7 +68,7 @@ std::string Command::getIdArgument(){
         return idString;
     }
 
-std::string priceFormat(std::string target){
+std::string IO::priceFormat(std::string target){
     size_t targetSize = target.size() - 1;
     int c = 0;
     for(size_t i = targetSize; i > 0;i--){

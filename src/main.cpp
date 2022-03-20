@@ -16,23 +16,23 @@ const int total_width = id_width + name_width + int_width *3 + sep.size() * num_
 const std::string line = sep + std::string( total_width-1, '-' ) + '|' ;
 
 
-void SqltDB::callbackCout(std::vector<std::string>& dataFetch){
+void Database::SqltDB::callbackCout(std::vector<std::string>& dataFetch){
         auto id = dataFetch[0];
         auto name = dataFetch[1];
-        auto price = priceFormat(dataFetch[2]);
+        auto price = IO::priceFormat(dataFetch[2]);
         auto quantity = dataFetch[3];
-        auto total = priceFormat(dataFetch[4]);  
+        auto total = IO::priceFormat(dataFetch[4]);  
         std::cout << sep
                 << std::setw(id_width) << id<< sep  
-                << std::setw(name_width) << truncateByEllipsis(name, name_width) << sep 
+                << std::setw(name_width) << IO::truncateByEllipsis(name, name_width) << sep 
                 << std::setw(int_width) << price << sep
                 << std::setw(int_width) << quantity << sep
                 << std::setw(int_width) << total << sep 
                 << "\n";
  }
 
-static SqltDB db;
-static Command command;
+static Database::SqltDB db;
+static IO::Command command;
 
 int main(){
   db.open("db.sqlite3");
@@ -47,12 +47,12 @@ int main(){
     else if (command == COMMAND_ADD){
       Stock s;
       std::cin >> s;
-      std::string sql_c =  sql("insert into stock(name, price, quantity, total) values(?,?,?,?)", {s.name, std::to_string(s.price), std::to_string(s.quantity), std::to_string(s.total)});
+      std::string sql_c =  Database::sql("insert into stock(name, price, quantity, total) values(?,?,?,?)", {s.name, std::to_string(s.price), std::to_string(s.quantity), std::to_string(s.total)});
       db.execute(sql_c);
     }
     
     else if (command == COMMAND_SHOW){
-      db.query("SELECT SUM(total) from stock", SqltDB::callbackFetchAll);
+      db.query("SELECT SUM(total) from stock", Database::SqltDB::callbackFetchAll);
       auto total = db.records[0][0];    
       std::cout << "\n\n" << line << '\n' << sep
                 << std::setw(id_width) << "Id" << sep
@@ -62,13 +62,13 @@ int main(){
                 << std::setw(int_width) << "Total" << sep  
                 << '\n' << line << "\n" ;
      
-      db.query("SELECT * FROM stock", SqltDB::callbackShow);
+      db.query("SELECT * FROM stock", Database::SqltDB::callbackShow);
       std::cout << line << '\n'
       << sep
       << std::setw(id_width) << "" << "  " 
       << std::setw(name_width) << "" << "  "
       << std::setw(int_width * 2) << "" << "  " << sep 
-      << std::setw(int_width) << priceFormat(total) << sep
+      << std::setw(int_width) << (total == "NULL" ? "0" : IO::priceFormat(total)) << sep
       << "\n" <<  line <<"\n";
     }
 
@@ -93,13 +93,13 @@ int main(){
                 << std::setw(int_width) << "Price" << sep 
                 << std::setw(int_width) << "Quantity" << sep 
                 << '\n' << line << "\n" ;
-      std::string sql_q = sql("SELECT * FROM stock where id = ?", {std::to_string(id)});
+      std::string sql_q = Database::sql("SELECT * FROM stock where id = ?", {std::to_string(id)});
 
       // Records records;
-      db.query(sql_q, SqltDB::callbackFetchAll);
+      db.query(sql_q, Database::SqltDB::callbackFetchAll);
       auto records = db.records;
 
-      db.query(sql_q, SqltDB::callbackShow);
+      db.query(sql_q, Database::SqltDB::callbackShow);
       std::cout << std::setw(total_width) << ".....\n";
       
       if (records.empty()) continue;
@@ -110,11 +110,11 @@ int main(){
       unsigned int quantity = std::stoi(records[0][3]);
       
       
-      inputString(name, "New Name: ");
-      inputNumber(price, "NewPrice: ");
-      inputNumber(quantity, "New Quantity: ");
+      IO::inputString(name, "New Name: ");
+      IO::inputNumber(price, "NewPrice: ");
+      IO::inputNumber(quantity, "New Quantity: ");
       unsigned int total = price * quantity;      
-      sql_q = sql("UPDATE stock SET name = ? , price = ? , quantity = ?, total = ? WHERE id = ?", {name, std::to_string(price), std::to_string(quantity), std::to_string(total), std::to_string(id)});
+      sql_q = Database::sql("UPDATE stock SET name = ? , price = ? , quantity = ?, total = ? WHERE id = ?", {name, std::to_string(price), std::to_string(quantity), std::to_string(total), std::to_string(id)});
       db.execute(sql_q);
      }
 
@@ -133,7 +133,7 @@ int main(){
             continue;
       }
 
-      std::string sql_q =  sql("DELETE FROM stock where id = ?", {std::to_string(id)});
+      std::string sql_q =  Database::sql("DELETE FROM stock where id = ?", {std::to_string(id)});
       db.execute(sql_q);
     }
 

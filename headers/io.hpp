@@ -15,22 +15,19 @@
 #define COMMAND_HELP "help"
 #define COMMAND_EXIT "exit"
 
-class Command{
+namespace IO{
+    class Command{
 public:
     Command();
-    // static std::string add;
-    // static std::string show;
-    // static std::string update;
-    // static std::string del;
-    // static std::string help;
     std::string inputBuffer;
     bool operator == (const std::string &r);
     std::string getIdArgument();
 };
+    bool isNumber(std::string& s);
+    void inputNumber(unsigned int& target, const std::string inMessage,  std::string errMessage ="the input is invalid (must be a number)!\n");
+    void inputString(std::string& target, const std::string inMessage);
+    std::string truncateByEllipsis(std::string target, int maxSize);
+    std::string priceFormat(std::string target);
+}
 
-bool isNumber(std::string& s);
-void inputNumber(unsigned int& target, const std::string inMessage,  std::string errMessage ="the input is invalid (must be a number)!\n");
-void inputString(std::string& target, const std::string inMessage);
-std::string truncateByEllipsis(std::string target, int maxSize);
-std::string priceFormat(std::string target);
 #endif
