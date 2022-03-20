@@ -41,16 +41,17 @@ class DataDisplayer{
 private:
     Fields m_fields;
     std::string sep;
+    std::string line;
     
 public:
     DataDisplayer(std::vector<std::string>& label, std::vector<int>&labelWidth);
-    std::string line;
     int numFields();
     int totalWidth();
     void generateLine();
     void drawLine();
     void drawHead();
     void drawBody(std::vector<std::string>& dataFetch);
+    void drawBelow(std::string & s, int col);
 };
 
 bool isNumber(std::string& s);

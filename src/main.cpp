@@ -8,14 +8,13 @@
 
 
 
-
-
 static Database::SqltDB db;
 static IO::Command command;
+
+
 std::vector<std::string> columns = {"Id", "Product Name", "Price", "Quantity", "Total"};
 std::vector<int> columnsWidth = {10,20,20,20,20};
 static IO::DataDisplayer dataDisplayer(columns, columnsWidth);
-
 
 void Database::SqltDB::callbackCout(std::vector<std::string>& dataFetch){        
         auto id = dataFetch[0];
@@ -58,13 +57,17 @@ int main(){
     
     else if (command == COMMAND_SHOW){
       db.execute("SELECT SUM(total) from stock", Database::SqltDB::callbackFetchAll);
-      auto total = db.records[0][0];    
-
-
+      auto total = db.records[0][0];
+      if (total != "NULL"){
+          total = IO::priceFormat(total);
+      }
+        
      
       dataDisplayer.drawHead();
-      db.execute("SELECT * FROM stock",
-      Database::SqltDB::callbackShow);
+      db.execute("SELECT * FROM stock", Database::SqltDB::callbackShow);
+      dataDisplayer.drawLine();
+      dataDisplayer.drawBelow(total, 5);
+      //std::cout << dataDisplayer.totalWidth(); 
     
     }
 

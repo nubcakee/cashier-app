@@ -162,13 +162,22 @@ void IO::DataDisplayer::drawBody(std::vector<std::string> &dataFetch){
         auto data = truncateByEllipsis(dataFetch[i], columnWidth);
         std::cout << sep << std::setw(columnWidth) << data;
     }
-    // std::map<std::string, int>::iterator it;
-    // int index = 0;
-    // for (it =m_fields.begin(); it != m_fields.end();it++){
-    //     auto data = truncateByEllipsis(dataFetch[index], it->second);
-    //     std::cout << sep << std::setw(it->second) << data;
-    //     index++;
-    // }
-  
-    std::cout << std::endl; 
-}   
+    std::cout << sep << std::endl; 
+}
+
+void IO::DataDisplayer::drawBelow(std::string &s, int col){
+    std::cout << std::endl;
+    for (size_t i = 0; i< m_fields.size();i++){
+        std::string column;
+        int columnWidth;
+        std::tie(column, columnWidth) = m_fields.getField(i);
+        if (i == col-1){
+            std::cout << std::setw(columnWidth + sep.size()) << std::right << s;
+        }
+        else
+        std::cout << std::setw(columnWidth + sep.size()) << std::right << "";
+    }
+
+    std::cout << std::endl;
+    
+}
