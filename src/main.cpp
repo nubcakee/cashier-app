@@ -36,7 +36,14 @@ static IO::Command command;
 
 int main(){
   db.open("db.sqlite3");
+
+  // db.execute("CREATE TABLE IF NOT EXISTS user (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, password VARCHAR(20))");
+  
+  // db.execute("CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE)");
+  
   db.execute("CREATE TABLE IF NOT EXISTS stock (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, price INTEGER NOT NULL, quantity INTEGER NOT NULL, total INTEGER NOT NULL)");
+  
+  
   while(true){
 
     std::cout << ">> ";
@@ -86,15 +93,23 @@ int main(){
             std::cout << "invalid argument\n";
             continue;
       }
-      std::cout << "\n\n*Selected\n";
-      std::cout << line << '\n' << sep
-                << std::setw(int_width) << "Id" << sep
-                << std::setw(name_width) << "Product Name" << sep
-                << std::setw(int_width) << "Price" << sep 
-                << std::setw(int_width) << "Quantity" << sep 
-                << '\n' << line << "\n" ;
+
       std::string sql_q = Database::sql("SELECT * FROM stock where id = ?", {std::to_string(id)});
 
+      if (!db.isExist(sql_q)) {
+        std::cout << "no stock with id of " << id << std::endl;
+        continue;
+      }
+
+      std::cout << "\n\n*Selected\n";
+      std::cout << line << '\n' << sep
+                << std::setw(id_width) << "Id" << sep
+                << std::setw(name_width) << "Product Name" << sep
+                << std::setw(int_width) << "Price" << sep 
+                << std::setw(int_width) << "Quantity" << sep
+                << std::setw(int_width) << "Total" << sep  
+                << '\n' << line << "\n" ;
+      
       // Records records;
       db.query(sql_q, Database::SqltDB::callbackFetchAll);
       auto records = db.records;
@@ -133,8 +148,19 @@ int main(){
             continue;
       }
 
-      std::string sql_q =  Database::sql("DELETE FROM stock where id = ?", {std::to_string(id)});
-      db.execute(sql_q);
+      // check if exist
+      auto sql_qSelect = Database::sql("SELECT * FROM stock where id = ?", {std::to_string(id)});
+
+      if (!db.isExist(sql_qSelect)){
+        std::cout << "no stock with id of " << id << "\n";
+        continue;
+      }
+
+
+      std::string sql_qDelete =  Database::sql("DELETE FROM stock where id = ?", {std::to_string(id)});
+      db.execute(sql_qDelete);
+      std::cout << id << " deleted\n";
+      
     }
 
     else if (command == COMMAND_EXIT) exit(0);

@@ -26,6 +26,7 @@ namespace Database{
     static int callbackFetchAll(void* data, int argc, char** argv, char** azColName);
     static int callbackTest(void* data, int argc, char** argv, char** azColname);
     void query(std::string, int(*func)(void*, int, char**, char**));
+    bool isExist(std::string sql);
   };
 
   std::string sql(const std::string sql, std::vector<std::string> args);

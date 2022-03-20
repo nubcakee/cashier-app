@@ -95,3 +95,22 @@ std::string Database::sql(const std::string sql, std::vector<std::string> args){
         }
                 return x;
 }
+
+
+bool Database::SqltDB::isExist(std::string sql){
+      this->query(sql, this->callbackFetchAll);
+
+      try{
+          auto first = this->records[0][0];
+      }
+      
+      catch( const std::length_error &e){
+          return false;
+      }
+
+      catch (...){
+          return false;
+      }
+    //   if (first == "NULL") return false;
+      return true;
+    }
