@@ -17,21 +17,21 @@ void Database::SqltDB::open(const char* fileName){
     //     std::cout << "Opened Database Successfully!" << std::endl;
 }
 
-int Database::SqltDB::execute(std::string sql){
-      char* messageError;
-      exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &messageError);
+// int Database::SqltDB::execute(std::string sql){
+//       char* messageError;
+//       exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &messageError);
       
-      if (exit != SQLITE_OK) {
-        std::cerr << "[ERROR] " << std::string(messageError) << std::endl;
-        sqlite3_free(messageError);
-      }
-    //   else{
-    //          std::cout << "[SUCCESS] " << sql << std::endl;
-    //   }
+//       if (exit != SQLITE_OK) {
+//         std::cerr << "[ERROR] " << std::string(messageError) << std::endl;
+//         sqlite3_free(messageError);
+//       }
+//     //   else{
+//     //          std::cout << "[SUCCESS] " << sql << std::endl;
+//     //   }
          
-        // std::cout << "exit code " << exit << std::endl;
-        return exit;
-}
+//         // std::cout << "exit code " << exit << std::endl;
+//         return exit;
+// }
 
 
 int Database::SqltDB::callbackShow(void* data, int argc, char** argv, char** azColName)
@@ -59,24 +59,15 @@ int Database::SqltDB::callbackFetchAll(void* data, int argc, char** argv, char**
         return 0;
 }
 
-int Database::SqltDB::callbackTest(void* data, int argc, char** argv, char** azColname){
-    Records* record  = static_cast<Records*>(data);
-     std::vector<std::string> d;
-     for (size_t i = 0; i < argc; i++) {
-            std::cout << argv[i];
-            d.push_back( argv[i] ? argv[i] : "NULL");
-        }
-    record->push_back(d);
-    return 0;
-  };
 
-void Database::SqltDB::query(std::string query, int(*func)(void*, int, char**, char**)){
+int Database::SqltDB::execute(std::string query, int(*func)(void*, int, char**, char**)){
     records.clear();
     char* errorMessage; 
     exit = sqlite3_exec(DB, query.c_str(), func, &records, &errorMessage);
     if (exit != SQLITE_OK)
           std::cerr << "[ERROR] " << std::string(errorMessage) << std::endl;   
-    // return records;
+    sqlite3_free(errorMessage);
+    return exit;
 }
 
 
@@ -98,7 +89,7 @@ std::string Database::sql(const std::string sql, std::vector<std::string> args){
 
 
 bool Database::SqltDB::isExist(std::string sql){
-      this->query(sql, this->callbackFetchAll);
+      this->execute(sql, this->callbackFetchAll);
 
       try{
           auto first = this->records[0][0];

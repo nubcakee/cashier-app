@@ -4,39 +4,37 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 
 
-const int id_width = 5;
-const int name_width = 20;
-const int int_width = 15;
-const int num_flds = 5;
-const std::string sep = " |" ;
-const int total_width = id_width + name_width + int_width *3 + sep.size() * num_flds ;
-const std::string line = sep + std::string( total_width-1, '-' ) + '|' ;
 
 
-void Database::SqltDB::callbackCout(std::vector<std::string>& dataFetch){
+static Database::SqltDB db;
+static IO::Command command;
+std::vector<std::string> columns = {"Id", "Product Name", "Price", "Quantity", "Total"};
+std::vector<int> columnsWidth = {10,20,20,20,20};
+static IO::DataDisplayer dataDisplayer(columns, columnsWidth);
+
+
+void Database::SqltDB::callbackCout(std::vector<std::string>& dataFetch){        
         auto id = dataFetch[0];
         auto name = dataFetch[1];
         auto price = IO::priceFormat(dataFetch[2]);
         auto quantity = dataFetch[3];
-        auto total = IO::priceFormat(dataFetch[4]);  
-        std::cout << sep
-                << std::setw(id_width) << id<< sep  
-                << std::setw(name_width) << IO::truncateByEllipsis(name, name_width) << sep 
-                << std::setw(int_width) << price << sep
-                << std::setw(int_width) << quantity << sep
-                << std::setw(int_width) << total << sep 
-                << "\n";
- }
+        auto total = IO::priceFormat(dataFetch[4]);
+        std::vector<std::string> data{id,name, price, quantity, total};
+        dataDisplayer.drawBody(data);  
+}
 
-static Database::SqltDB db;
-static IO::Command command;
+
+
+
 
 int main(){
   db.open("db.sqlite3");
 
+ 
   // db.execute("CREATE TABLE IF NOT EXISTS user (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, password VARCHAR(20))");
   
   // db.execute("CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE)");
@@ -59,24 +57,15 @@ int main(){
     }
     
     else if (command == COMMAND_SHOW){
-      db.query("SELECT SUM(total) from stock", Database::SqltDB::callbackFetchAll);
+      db.execute("SELECT SUM(total) from stock", Database::SqltDB::callbackFetchAll);
       auto total = db.records[0][0];    
-      std::cout << "\n\n" << line << '\n' << sep
-                << std::setw(id_width) << "Id" << sep
-                << std::setw(name_width) << "Product Name" << sep
-                << std::setw(int_width) << "Price" << sep 
-                << std::setw(int_width) << "Quantity" << sep
-                << std::setw(int_width) << "Total" << sep  
-                << '\n' << line << "\n" ;
+
+
      
-      db.query("SELECT * FROM stock", Database::SqltDB::callbackShow);
-      std::cout << line << '\n'
-      << sep
-      << std::setw(id_width) << "" << "  " 
-      << std::setw(name_width) << "" << "  "
-      << std::setw(int_width * 2) << "" << "  " << sep 
-      << std::setw(int_width) << (total == "NULL" ? "0" : IO::priceFormat(total)) << sep
-      << "\n" <<  line <<"\n";
+      dataDisplayer.drawHead();
+      db.execute("SELECT * FROM stock",
+      Database::SqltDB::callbackShow);
+    
     }
 
     else if (command.inputBuffer.find(COMMAND_UPDATE) != std::string::npos){
@@ -101,21 +90,14 @@ int main(){
         continue;
       }
 
-      std::cout << "\n\n*Selected\n";
-      std::cout << line << '\n' << sep
-                << std::setw(id_width) << "Id" << sep
-                << std::setw(name_width) << "Product Name" << sep
-                << std::setw(int_width) << "Price" << sep 
-                << std::setw(int_width) << "Quantity" << sep
-                << std::setw(int_width) << "Total" << sep  
-                << '\n' << line << "\n" ;
+      
       
       // Records records;
-      db.query(sql_q, Database::SqltDB::callbackFetchAll);
+      db.execute(sql_q, Database::SqltDB::callbackFetchAll);
       auto records = db.records;
 
-      db.query(sql_q, Database::SqltDB::callbackShow);
-      std::cout << std::setw(total_width) << ".....\n";
+      db.execute(sql_q, Database::SqltDB::callbackShow);
+     
       
       if (records.empty()) continue;
 

@@ -10,6 +10,8 @@
 using Record = std::vector<std::string>;
 using Records = std::vector<Record>;
 
+
+
 namespace Database{
   class SqltDB{
     sqlite3* DB;
@@ -17,15 +19,14 @@ namespace Database{
 
   public:
     static void callbackCout(std::vector<std::string>& dataFetch);
+  
     SqltDB();
     ~SqltDB();
     void open(const char* fileName);
-    int execute(std::string sql);
     Records records;
     static int callbackShow(void* data, int argc, char** argv, char** azColName);
     static int callbackFetchAll(void* data, int argc, char** argv, char** azColName);
-    static int callbackTest(void* data, int argc, char** argv, char** azColname);
-    void query(std::string, int(*func)(void*, int, char**, char**));
+    int execute(std::string, int(*func)(void*, int, char**, char**)=NULL);
     bool isExist(std::string sql);
   };
 
